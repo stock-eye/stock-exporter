@@ -1,0 +1,37 @@
+[{
+    "Name": "上证指数",
+    "Code": "sh000001",
+    "Open": 3616.5400390625,
+    "Close": 3621.26416015625,
+    "Current": 3606.74951171875,
+    "Highest": 3616.5400390625,
+    "Lowest": 3585.033935546875,
+    "Increase": -0.40081716758475094,
+    "TradeVolume": 3244630.72,
+    "Weibi": 0,
+    "Last3BuySum": 0,
+    "Last3SellSum": 0,
+    "CurrentTime": "15:02:11",
+    "IsRecord": false,
+    "History": {
+        "15:02:11": 3606.74951171875
+    }
+} {
+    "Name": "深证成指",
+    "Code": "sz399001",
+    "Open": 15508.9384765625,
+    "Close": 15520.59765625,
+    "Current": 15628.73046875,
+    "Highest": 15632.333984375,
+    "Lowest": 15381.603515625,
+    "Increase": 0.6967052100371659,
+    "TradeVolume": 396161433.6,
+    "Weibi": 0,
+    "Last3BuySum": 0,
+    "Last3SellSum": 0,
+    "CurrentTime": "15:00:03",
+    "IsRecord": false,
+    "History": {
+        "15:00:03": 15628.73046875
+    }
+}]
