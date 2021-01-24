@@ -1,0 +1,6 @@
+alwaysScrape: false
+port: 8080
+interval: 5
+filePath: "./"
+codeFileName: code.txt
+stockFileName: stock.txt

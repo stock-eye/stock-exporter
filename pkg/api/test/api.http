@@ -1,0 +1,121 @@
+@host=http://localhost:8181
+@content-type=application/json
+
+GET {{host}}/stocks HTTP/1.1
+
+### 
+GET {{host}}/stock-operator/sh000001 HTTP/1.1
+
+###
+POST {{host}}/stock-operator/sh000001 HTTP/1.1
+
+###
+DELETE {{host}}/stock-operator/sh000001 HTTP/1.1
+
+###
+POST {{host}}/strategy HTTP/1.1
+content-type:{{content-type}}
+
+{
+    "code":"sh000001",
+    "stockExpressions":[
+        {
+            "monitorType":"type002",
+            "monitorArgs":["10"],
+            "compareString":"<"
+        }
+    ],
+    "contactType":"email",
+    "contactValue":"915917782@qq.com"
+}
+###
+DELETE {{host}}/strategy HTTP/1.1
+content-type:{{content-type}}
+
+{
+    "code":"sh000001",
+    "stockExpressions":[
+        {
+            "monitorType":"type001",
+            "monitorArgs":["-2"],
+            "compareString":"<"
+        }
+    ],
+    "contactType":"email",
+    "contactValue":"915917782@qq.com"
+}
+###
+
+POST {{host}}/strategy HTTP/1.1
+content-type:{{content-type}}
+
+{
+    "code":"sh000001",
+    "stockExpressions":[
+        {
+            "monitorType":"type003",
+            "monitorArgs":["5m","3"],
+            "compareString":">"
+        },
+        {
+            "monitorType":"type004",
+            "monitorArgs":["2m","1"],
+            "compareString":"<"
+        }
+    ],
+    "contactType":"email",
+    "contactValue":"915917782@qq.com"
+}
+###
+DELETE {{host}}/strategy HTTP/1.1
+content-type:{{content-type}}
+
+{
+    "code":"sh000001",
+    "stockExpressions":[
+        {
+            "monitorType":"type003",
+            "monitorArgs":["5m","3"],
+            "compareString":">"
+        },
+        {
+            "monitorType":"type004",
+            "monitorArgs":["2m","1"],
+            "compareString":">"
+        }
+    ],
+    "contactType":"email",
+    "contactValue":"915917782@qq.com"
+}
+
+###
+POST {{host}}/dashboard HTTP/1.1
+content-type:{{content-type}}
+
+{
+    "folderName":"Test",
+    "dashBoardName":"Test1",
+    "expression":"avg(sum(irate(container_cpu_usage_seconds_total{name=\"stock\"}[1h])) by (name)*100) by (name)",
+    "pannelType":"graph"
+}
+
+###
+DELETE {{host}}/dashboard HTTP/1.1
+content-type:{{content-type}}
+
+{
+    "dashBoardName":"Test1"
+}
+
+###
+POST {{host}}/dashboard/sh000001/image HTTP/1.1
+content-type:{{content-type}}
+
+{
+}
+
+
+### 
+POST http://localhost:9090/-/reload HTTP/1.1
+content-type:{{content-type}}
+
