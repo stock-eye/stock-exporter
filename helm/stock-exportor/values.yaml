@@ -11,8 +11,8 @@ image:
   tag: "latest"
 
 env: 
-  name: filePath
-  value: "./"
+  - name: filePath
+    value: "./"
 
 imagePullSecrets: []
 nameOverride: ""
