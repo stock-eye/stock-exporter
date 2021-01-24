@@ -8,6 +8,7 @@ import (
 	"github.com/linclaus/stock-exportor/pkg/cache"
 	"github.com/linclaus/stock-exportor/pkg/metric"
 	"github.com/linclaus/stock-exportor/pkg/model"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 type Server struct {
@@ -22,6 +23,7 @@ func New(cs *model.CodeSet) *Server {
 		r:     r,
 		Codes: cs,
 	}
+	r.Handle("/metrics", s.metricHandler(promhttp.Handler()))
 	r.HandleFunc("/stocks", s.GetStocks).Methods("GET")
 	r.HandleFunc("/stock-operator/{code}", s.GetStockByCode).Methods("GET")
 	r.HandleFunc("/stock-operator/{code}", s.AddStockByCode).Methods("POST")
