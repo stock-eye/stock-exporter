@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/linclaus/stock-exportor/pkg/cache"
+	"github.com/robfig/cron/v3"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 
 	"github.com/linclaus/stock-exportor/pkg/api"
@@ -32,7 +34,8 @@ func main() {
 	// Get os signal
 	c := make(chan os.Signal)
 	signal.Notify(c, os.Interrupt, os.Kill)
-	codes := initCodeSet()
+	codes := model.NewCodeSet()
+	go refreshCodeSet(codes)
 	s := api.New(codes)
 	//Init metrics
 	channel.Init()
@@ -83,6 +86,21 @@ func main() {
 			return
 		}
 	}
+}
+
+func refreshCodeSet(cs *model.CodeSet) {
+	codes := util.GetStocksMetaDataFromTuShare()
+	logrus.Infof("Init codeSet size: %d", len(codes))
+	cs.AddSet(codes)
+	timezone, _ := time.LoadLocation("Asia/Shanghai")
+	c := cron.New(cron.WithLocation(timezone))
+	c.AddFunc("0 9 * * *", func() {
+		codes := util.GetStocksMetaDataFromTuShare()
+		logrus.Infof("Refresh codeSet size: %d", len(codes))
+		cs.Clear()
+		cs.AddSet(codes)
+	})
+	c.Start()
 }
 
 func initCodeSet() *model.CodeSet {

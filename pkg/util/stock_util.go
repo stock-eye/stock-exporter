@@ -1,6 +1,7 @@
 package util
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -10,6 +11,7 @@ import (
 	"time"
 
 	"github.com/linclaus/stock-exportor/pkg/model"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/text/encoding/simplifiedchinese"
 )
 
@@ -65,6 +67,46 @@ func getStocksInfoFromSina(codes []string) (string, bool) {
 		ok = false
 	}
 	return results, ok
+}
+
+type StockData struct {
+	RequestID string `json:"request_id"`
+	Code      int    `json:"code"`
+	Msg       string `json:"msg"`
+	Data      Data   `json:"data"`
+}
+type Data struct {
+	Fields  []string   `json:"fields"`
+	Items   [][]string `json:"items"`
+	HasMore bool       `json:"has_more"`
+}
+
+func GetStocksMetaDataFromTuShare() []string {
+	codes := make([]string, 0)
+	stock := &StockData{}
+	if res, err := http.Post("http://api.waditu.com", "application/json", strings.NewReader(`{
+		"api_name": "stock_basic",
+		"token": "861bd23f5c387e475dd08600bfcc4707693e0ce269dadbb2edfa63fb",
+		"params": {
+			"list_stauts": "L"
+		},
+		"fields": "ts_code,name,area,industry,list_date"
+	}`)); err != nil {
+		logrus.Error(err)
+	} else {
+		body, _ := ioutil.ReadAll(res.Body)
+		json.Unmarshal(body, stock)
+		for _, item := range stock.Data.Items {
+			codestr := strings.Split(item[0], ".")
+			if codestr[1] == "SH" {
+				codes = append(codes, "sh"+codestr[0])
+			}
+			if codestr[1] == "SZ" {
+				codes = append(codes, "sz"+codestr[0])
+			}
+		}
+	}
+	return codes
 }
 
 func StockExixts(code string) bool {
