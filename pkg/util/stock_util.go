@@ -106,6 +106,7 @@ func GetStocksMetaDataFromTuShare() []string {
 			}
 		}
 	}
+	codes = append(codes, []string{"sh000001", "sz399001"}...)
 	return codes
 }
 
